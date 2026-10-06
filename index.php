@@ -1,128 +1,155 @@
-<?php
+<!DOCTYPE html>
+<html lang="id">
 
-session_start();
+<head>
 
-$halaman = isset($_GET['halaman'])
-    ? $_GET['halaman']
-    : 'home';
+    <meta charset="UTF-8">
 
-switch ($halaman) {
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    case 'home':
+    <title>Koleksi Buku - DigiBook</title>
 
-        require_once "Controllers/HomeControl.php";
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
 
-        $controller = new HomeControl();
-        $controller->index();
+    <link
+        rel="stylesheet"
+        href="/DigiBook/css/style.css"
+    >
 
-        break;
+</head>
 
+<body>
 
-    case 'login':
+<nav class="navbar navbar-expand-lg">
 
-        require_once "Controllers/AuthControl.php";
+    <div class="container">
 
-        $controller = new AuthControl();
-        $controller->login();
+        <a
+            class="navbar-brand"
+            href="/DigiBook/"
+        >
+            DigiBook.
+        </a>
 
-        break;
+        <div>
 
+            <a
+                href="/DigiBook/index.php?halaman=home"
+                class="btn btn-outline-dark"
+            >
+                Home
+            </a>
 
-    case 'daftar':
+        </div>
 
-        require_once "Controllers/AuthControl.php";
+    </div>
 
-        $controller = new AuthControl();
-        $controller->daftar();
-
-        break;
-
-
-    case 'logout':
-
-        require_once "Controllers/AuthControl.php";
-
-        $controller = new AuthControl();
-        $controller->logout();
-
-        break;
-
-
-    case 'buku':
-
-        require_once "Controllers/BukuControl.php";
-
-        $controller = new BukuControl();
-        $controller->index();
-
-        break;
+</nav>
 
 
-    case 'detail_buku':
+<section class="section">
 
-        require_once "Controllers/BukuControl.php";
+    <div class="container">
 
-        $controller = new BukuControl();
-        $controller->detail();
+        <div class="section-title">
 
-        break;
+            <p>DISCOVER</p>
 
+            <h2>
+                Koleksi Buku
+            </h2>
 
-    case 'baca':
+            <p class="mt-3">
+                Temukan cerita dan pengetahuan baru
+                untuk menemani perjalanan membacamu.
+            </p>
 
-        require_once "Controllers/BukuControl.php";
-
-        $controller = new BukuControl();
-        $controller->baca();
-
-        break;
-
-
-    case 'admin':
-
-        require_once "Controllers/AdminControl.php";
-
-        $controller = new AdminControl();
-        $controller->dashboard();
-
-        break;
+        </div>
 
 
-    case 'admin_buku':
+        <div class="row">
 
-        require_once "Controllers/AdminControl.php";
+            <?php if ($buku->num_rows > 0) { ?>
 
-        $controller = new AdminControl();
-        $controller->buku();
+                <?php while ($data = $buku->fetch_assoc()) { ?>
 
-        break;
+                    <div class="col-lg-4 col-md-6 mb-4">
 
+                        <div class="book-card">
 
-    case 'tambah_buku':
+                            <?php if (!empty($data['cover'])) { ?>
 
-        require_once "Controllers/AdminControl.php";
+                                <img
+                                    src="/DigiBook/uploads/buku/<?= htmlspecialchars($data['cover']) ?>"
+                                    alt="<?= htmlspecialchars($data['judul']) ?>"
+                                >
 
-        $controller = new AdminControl();
-        $controller->tambahBuku();
+                            <?php } else { ?>
 
-        break;
+                                <div class="book-cover-empty">
+                                    📖
+                                </div>
 
-
-    case 'hapus_buku':
-
-        require_once "Controllers/AdminControl.php";
-
-        $controller = new AdminControl();
-        $controller->hapusBuku();
-
-        break;
+                            <?php } ?>
 
 
-    default:
+                            <div class="book-content">
 
-        echo "Halaman tidak ditemukan.";
+                                <small>
+                                    <?= htmlspecialchars($data['kategori']) ?>
+                                </small>
 
-        break;
-}
+                                <h4>
+                                    <?= htmlspecialchars($data['judul']) ?>
+                                </h4>
 
-?>
+                                <p>
+                                    <?= htmlspecialchars($data['penulis']) ?>
+                                </p>
+
+                                <a
+                                    href="/DigiBook/index.php?halaman=detail_buku&id=<?= $data['id_buku'] ?>"
+                                    class="btn btn-dark"
+                                >
+                                    Lihat Buku →
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                <?php } ?>
+
+            <?php } else { ?>
+
+                <div class="text-center">
+
+                    <h4>
+                        Belum ada buku.
+                    </h4>
+
+                    <p>
+                        Admin belum menambahkan buku.
+                    </p>
+
+                </div>
+
+            <?php } ?>
+
+        </div>
+
+    </div>
+
+</section>
+
+</body>
+
+</html>
